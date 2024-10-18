@@ -1,3 +1,12 @@
+# What's changed
+- Focus only on wakeup event
+- Targeting older browsers like IE11
+- Remove comments from minification
+- If you want to use this in IE11 make sure to transpile it first with help of babel online(not implemented)
+
+
+## From original repro:
+
 ifvisible.js
 ------------
 
