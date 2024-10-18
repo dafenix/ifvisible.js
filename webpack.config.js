@@ -3,6 +3,7 @@ const fs = require("fs");
 const webpack = require("webpack");
 const version = JSON.parse(fs.readFileSync(path.join(__dirname, "package.json"))).version;
 const WebpackShellPlugin = require("webpack-shell-plugin");
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const isProd = process.env.NODE_ENV === "production";
 
 let config = {
@@ -11,7 +12,7 @@ let config = {
         app: ["./src/main.ts"]
     },
     watch: !isProd,
-    devtool: "inline-source-map",
+    devtool: isProd ? false : "inline-source-map",
     output: {
         path: path.resolve(__dirname, "dist"),
         filename: "ifvisible.js",
@@ -29,7 +30,14 @@ let config = {
         }]
     },
     optimization: {
-        minimize: isProd
+        minimize: isProd,
+        minimizer: [new UglifyJsPlugin({
+            uglifyOptions: {
+              output: {
+                comments: false,
+              },
+            },
+          })],
     },
     plugins: [
         new webpack.DefinePlugin({
