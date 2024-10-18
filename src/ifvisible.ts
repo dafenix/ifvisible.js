@@ -1,5 +1,4 @@
 import { Events } from './Events';
-import Timer from './Timer';
 
 export const STATUS_ACTIVE = 'active';
 export const STATUS_IDLE = 'idle';
@@ -144,38 +143,6 @@ export class IfVisible {
     return this;
   }
 
-  setIdleDuration (seconds: number): IfVisible {
-    this.idleTime = seconds * 1000;
-    this.startIdleTimer();
-    return this;
-  }
-
-  getIdleDuration (): number {
-    return this.idleTime;
-  }
-
-  getIdleInfo (): IIdleInfo {
-    const now = +(new Date());
-    let res: IIdleInfo;
-    if (this.status === STATUS_IDLE) {
-      res = {
-        isIdle: true,
-        idleFor: now - this.idleStartedTime,
-        timeLeft: 0,
-        timeLeftPer: 100,
-      };
-    } else {
-      const timeLeft = (this.idleStartedTime + this.idleTime) - now;
-      res = {
-        isIdle: false,
-        idleFor: now - this.idleStartedTime,
-        timeLeft,
-        timeLeftPer: parseFloat((100 - (timeLeft * 100 / this.idleTime)).toFixed(2)),
-      };
-    }
-    return res;
-  }
-
   idle (callback?: (data: any) => any): IfVisible {
     if (callback) {
       this.on('idle', callback);
@@ -219,16 +186,5 @@ export class IfVisible {
       Events.fire('statusChanged', [{ status: this.status }]);
     }
     return this;
-  }
-
-  onEvery (seconds: number, callback: Function): Timer {
-    return new Timer(this, seconds, callback);
-  }
-
-  now (check?: string): boolean {
-    if (check !== undefined) {
-      return this.status === check;
-    }
-    return this.status === STATUS_ACTIVE;
   }
 }
